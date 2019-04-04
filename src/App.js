@@ -1,25 +1,47 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Header from './componentes/Header';
+import Noticias from './componentes/Noticias';
+import Formulario from './componentes/Formulario';
+import './css/index.css';
 
 class App extends Component {
+  state={
+    noticias : []
+  }
+
+  componentDidMount(){
+    this.consultarNoticias();
+  }
+
+  consultarNoticias =(categoria = 'general') =>{
+    let categorias = categoria;
+    let url = `https://newsapi.org/v2/top-headlines?country=mx&category=${categorias}&apiKey=3b1efc4a11e145dea7d946ed3340d99f`;
+
+    fetch(url)
+    .then(respuesta=>{
+      return respuesta.json();
+    })
+    .then(noticias => {
+      this.setState({
+        noticias: noticias.articles
+      })
+    })
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div className="contenedor-app">
+       <Header titulo ="Noticias React"></Header>
+       <div className="container white contenedor-noticias">
+       <Formulario
+        consultarNoticias={this.consultarNoticias}
+       >
+       </Formulario>
+        <Noticias
+          noticias = {this.state.noticias}
+        >
+        </Noticias>
+       </div>
       </div>
     );
   }
